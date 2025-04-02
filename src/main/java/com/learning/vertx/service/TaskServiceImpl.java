@@ -2,13 +2,14 @@ package com.learning.vertx.service;
 
 import com.learning.vertx.dto.TaskDTO;
 import com.learning.vertx.dto.mapper.TaskDTOMapper;
-import com.learning.vertx.dto.mapper.TaskMapper;
+import com.learning.vertx.model.Project;
 import com.learning.vertx.model.Task;
 import com.learning.vertx.repository.TaskRepository;
 import io.vertx.core.Future;
 import jakarta.persistence.criteria.*;
 import org.hibernate.reactive.stage.Stage;
 
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 import java.util.concurrent.CompletionStage;
@@ -22,9 +23,13 @@ public class TaskServiceImpl implements TaskRepository {
   }
 
   @Override
-  public Future<TaskDTO> creatTask(TaskDTO taskDTO) {
-    TaskMapper taskMapper = new TaskMapper();
-    Task task = taskMapper.apply(taskDTO);
+  public Future<TaskDTO> creatTask(TaskDTO taskDTO, Project project) {
+    Task task = new Task();
+    task.setContent(taskDTO.getContent());
+    task.setCompleted(taskDTO.getCompleted());
+    task.setUserId(taskDTO.getUserId());
+    task.setCreatedAt(LocalDateTime.now());
+    task.setProject(project);
 
     TaskDTOMapper taskDTOMapper = new TaskDTOMapper();
 
@@ -34,7 +39,7 @@ public class TaskServiceImpl implements TaskRepository {
   }
 
   @Override
-  public Future<TaskDTO> updateTask(TaskDTO taskDTO, Integer id) {
+  public Future<TaskDTO> updateTask(TaskDTO taskDTO, String id) {
     CriteriaBuilder criteriaBuilder = sessionFactory.getCriteriaBuilder();
     CriteriaUpdate<Task> criteriaUpdate = criteriaBuilder.createCriteriaUpdate(Task.class);
     Root<Task> root = criteriaUpdate.from(Task.class);
@@ -50,7 +55,7 @@ public class TaskServiceImpl implements TaskRepository {
   }
 
   @Override
-  public Future<Optional<TaskDTO>> getTaskById(Integer id) {
+  public Future<Optional<TaskDTO>> getTaskById(String id) {
     TaskDTOMapper taskDTOMapper = new TaskDTOMapper();
     CompletionStage<Task> taskCompletionStage = sessionFactory.withTransaction((s, t) -> s.find(Task.class, id));
 
@@ -60,7 +65,7 @@ public class TaskServiceImpl implements TaskRepository {
   }
 
   @Override
-  public Future<Void> deleteTask(Integer id) {
+  public Future<Void> deleteTask(String id) {
     CriteriaBuilder criteriaBuilder = sessionFactory.getCriteriaBuilder();
     CriteriaDelete<Task> criteriaDelete = criteriaBuilder.createCriteriaDelete(Task.class);
     Root<Task> root = criteriaDelete.from(Task.class);

@@ -1,21 +1,22 @@
 package com.learning.vertx.model;
 
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.Id;
-import jakarta.persistence.Table;
+import jakarta.persistence.*;
+import lombok.Data;
+import org.hibernate.annotations.GenericGenerator;
 
 import java.time.LocalDateTime;
 import java.util.Objects;
 
 @Entity
 @Table(name = "tasks")
+@Data
 public class Task {
 
   @Id
-  @GeneratedValue
-  private Integer id;
+  @GeneratedValue(strategy = GenerationType.UUID, generator = "uuid2")
+  @GenericGenerator(name = "uuid2", strategy = "uuid2")
+  private String id;
 
   private String content;
 
@@ -25,47 +26,10 @@ public class Task {
 
   private LocalDateTime createdAt;
 
+  @ManyToOne()
+  private Project project;
+
   public Task() {
-  }
-
-  public Integer getId() {
-    return id;
-  }
-
-  public void setId(Integer id) {
-    this.id = id;
-  }
-
-  public String getContent() {
-    return content;
-  }
-
-  public void setContent(String content) {
-    this.content = content;
-  }
-
-  public Boolean getCompleted() {
-    return completed;
-  }
-
-  public void setCompleted(Boolean completed) {
-    this.completed = completed;
-  }
-
-  public String getUserId() {
-    return userId;
-  }
-
-  public void setUserId(String userId) {
-    this.userId = userId;
-  }
-
-  public LocalDateTime getCreatedAt() {
-    return createdAt;
-  }
-
-  public void setCreatedAt(LocalDateTime createdAt) {
-    this.createdAt = createdAt;
   }
 
   @Override

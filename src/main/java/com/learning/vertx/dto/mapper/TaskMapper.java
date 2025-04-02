@@ -9,11 +9,10 @@ public class TaskMapper implements Function<TaskDTO, Task> {
   @Override
   public Task apply(TaskDTO taskDTO) {
     Task task = new Task();
-    task.setUserId(task.getUserId());
+    task.setUserId(taskDTO.getUserId());
     task.setContent(taskDTO.getContent());
     task.setCompleted(taskDTO.getCompleted());
     task.setCreatedAt(taskDTO.getCreatedAt());
-    task.setId(taskDTO.getId());
 
     return task;
   }

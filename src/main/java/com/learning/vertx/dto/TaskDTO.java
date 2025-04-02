@@ -3,7 +3,7 @@ package com.learning.vertx.dto;
 import java.time.LocalDateTime;
 
 public class TaskDTO {
-  private Integer id;
+  private String id;
 
   private String content;
 
@@ -16,7 +16,7 @@ public class TaskDTO {
   public TaskDTO() {
   }
 
-  public TaskDTO(Integer id, String content, Boolean completed, String userId, LocalDateTime createdAt) {
+  public TaskDTO(String id, String content, Boolean completed, String userId, LocalDateTime createdAt) {
     this.id = id;
     this.content = content;
     this.completed = completed;
@@ -24,11 +24,11 @@ public class TaskDTO {
     this.createdAt = createdAt;
   }
 
-  public Integer getId() {
+  public String getId() {
     return id;
   }
 
-  public void setId(Integer id) {
+  public void setId(String id) {
     this.id = id;
   }
 
