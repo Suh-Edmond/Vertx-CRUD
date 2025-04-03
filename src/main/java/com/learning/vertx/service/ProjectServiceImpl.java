@@ -8,7 +8,9 @@ import io.vertx.core.Future;
 import jakarta.persistence.criteria.*;
 import org.hibernate.reactive.stage.Stage;
 
+import java.util.List;
 import java.util.concurrent.CompletionStage;
+import java.util.stream.Collectors;
 
 public class ProjectServiceImpl implements ProjectRepository {
   private final Stage.SessionFactory sessionFactory;
@@ -30,6 +32,7 @@ public class ProjectServiceImpl implements ProjectRepository {
 
   @Override
   public Future<ProjectDTO> updateProject(ProjectDTO projectDTO, String id) {
+
     CriteriaBuilder criteriaBuilder = sessionFactory.getCriteriaBuilder();
     CriteriaUpdate<Project> criteriaUpdate = criteriaBuilder.createCriteriaUpdate(Project.class);
     Root<Project> root = criteriaUpdate.from(Project.class);
@@ -41,7 +44,9 @@ public class ProjectServiceImpl implements ProjectRepository {
     where.set("description", projectDTO.getDescription());
 
     CompletionStage<Integer> completionStage = sessionFactory.withTransaction((s, t) -> s.createQuery(criteriaUpdate).executeUpdate());
+
     return Future.fromCompletionStage(completionStage).map(r -> projectDTO);
+
   }
 
   @Override
@@ -63,5 +68,14 @@ public class ProjectServiceImpl implements ProjectRepository {
     CompletionStage<Integer> completionStage = sessionFactory.withTransaction((s, t) -> s.createQuery(criteriaDelete).executeUpdate());
 
     return Future.fromCompletionStage(completionStage).compose(r -> Future.succeededFuture());
+  }
+
+  @Override
+  public Future<List<ProjectDTO>> getAllProjects() {
+     CriteriaBuilder criteriaBuilder = sessionFactory.getCriteriaBuilder();
+     CriteriaQuery<Project> criteriaQuery = criteriaBuilder.createQuery(Project.class);
+     CompletionStage<List<Project>> completionStage = sessionFactory.withTransaction((s, t) -> s.createQuery(criteriaQuery).getResultList());
+
+     return Future.fromCompletionStage(completionStage).map(result -> result.stream().map(e -> new ProjectDTOMapper().apply(e)).collect(Collectors.toList()));
   }
 }

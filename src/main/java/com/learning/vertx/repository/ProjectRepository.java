@@ -4,6 +4,8 @@ import com.learning.vertx.dto.ProjectDTO;
 import com.learning.vertx.model.Project;
 import io.vertx.core.Future;
 
+import java.util.List;
+
 public interface ProjectRepository {
   Future<Project> creatProject(ProjectDTO taskDTO);
 
@@ -12,4 +14,6 @@ public interface ProjectRepository {
   Future<ProjectDTO> getProjectById(String id);
 
   Future<Void> deleteProject(String id);
+
+  Future<List<ProjectDTO>> getAllProjects();
 }

@@ -78,18 +78,16 @@ class ProjectServiceImplTest {
   @Test
   void creatProject(Vertx vertx, VertxTestContext vertxTestContext) {
 
-    vertxTestContext.verify(() -> {
-      projectService.creatProject(projectDTO)
-        .compose(project -> taskService.creatTask(taskDTO, project))
-        .onFailure(vertxTestContext::failNow)
-        .onSuccess(task -> {
-          System.out.println(task);
-          Assertions.assertEquals(task.getCreatedAt(), taskDTO.getCreatedAt());
-          Assertions.assertEquals(task.getUserId(), taskDTO.getUserId());
-          Assertions.assertEquals(task.getCompleted(), taskDTO.getCompleted());
-          Assertions.assertEquals(task.getId(), taskDTO.getId());
-        });
-    }).completeNow();
+    vertxTestContext.verify(() -> projectService.creatProject(projectDTO)
+      .compose(project -> taskService.creatTask(taskDTO, project))
+      .onFailure(vertxTestContext::failNow)
+      .onSuccess(task -> {
+
+        Assertions.assertEquals(task.getCreatedAt(), taskDTO.getCreatedAt());
+        Assertions.assertEquals(task.getUserId(), taskDTO.getUserId());
+        Assertions.assertEquals(task.getCompleted(), taskDTO.getCompleted());
+        Assertions.assertEquals(task.getId(), taskDTO.getId());
+      })).completeNow();
   }
 
   @Test
